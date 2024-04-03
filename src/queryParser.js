@@ -136,7 +136,7 @@ function checkAggregateWithoutGroupBy(query, groupByFields) {
             joinCondition: null
         };
     }
-    
+
     function parseInsertQuery(query) {
         const insertRegex = /INSERT INTO (\w+)\s\((.+)\)\sVALUES\s\((.+)\)/i;
         const match = query.match(insertRegex);
@@ -154,4 +154,25 @@ function checkAggregateWithoutGroupBy(query, groupByFields) {
         };
     }
     
-    module.exports = { parseSelectQuery, parseJoinClause, parseInsertQuery };
+    function parseDeleteQuery(query) {
+    const deleteRegex = /DELETE FROM (\w+)( WHERE (.*))?/i;
+    const match = query.match(deleteRegex);
+
+    if (!match) {
+        throw new Error("Invalid DELETE syntax.");
+    }
+
+    const [, table, , whereString] = match;
+    let whereClauses = [];
+    if (whereString) {
+        whereClauses = parseWhereClause(whereString);
+    }
+
+    return {
+        type: 'DELETE',
+        table: table.trim(),
+        whereClauses
+    };
+}
+
+module.exports = { parseSelectQuery, parseJoinClause, parseInsertQuery, parseDeleteQuery };
