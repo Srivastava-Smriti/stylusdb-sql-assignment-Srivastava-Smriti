@@ -1,5 +1,5 @@
-const { parseQuery } = require('./queryParser');
-const readCSV = require('./csvReader');
+const { parseSelectQuery, parseInsertQuery } = require('./queryParser');
+const { readCSV, writeCSV } = require('./csvReader');
 
 function performInnerJoin(data, joinData, joinCondition, fields, table) {
     return data.flatMap(mainRow => {
@@ -84,7 +84,7 @@ function createResultRow(mainRow, joinRow, fields, table, includeAllMainFields) 
 
 async function executeSELECTQuery(query) {
     try {
-        const { fields, table, whereClauses, joinType, joinTable, joinCondition, groupByFields, hasAggregateWithoutGroupBy, orderByFields, limit, isDistinct } = parseQuery(query);
+        const { fields, table, whereClauses, joinType, joinTable, joinCondition, groupByFields, hasAggregateWithoutGroupBy, orderByFields, limit, isDistinct } = parseSelectQuery(query);
         let data = await readCSV(`${table}.csv`);
 
         // Perform INNER JOIN if specified
@@ -303,7 +303,7 @@ function evaluateCondition(row, clause) {
         const regex = new RegExp(regexPattern, 'i'); // 'i' for case-insensitive matching
         return regex.test(row[field]);
     }
-    
+
     switch (operator) {
         case '=': return rowValue === conditionValue;
         case '!=': return rowValue !== conditionValue;
@@ -315,4 +315,29 @@ function evaluateCondition(row, clause) {
     }
 }
 
-module.exports = executeSELECTQuery;
+async function executeINSERTQuery(query) {
+    console.log(parseInsertQuery(query));
+    const { table, columns, values } = parseInsertQuery(query);
+    const data = await readCSV(`${table}.csv`);
+
+    // Create a new row object
+    const newRow = {};
+    columns.forEach((column, index) => {
+        // Remove single quotes from the values
+        let value = values[index];
+        if (value.endsWith("'") && value.startsWith("'") ) {
+            value = value.substring(1, value.length - 1);
+        }
+        newRow[column] = value;
+    });
+
+    // Add the new row to the data
+    data.push(newRow);
+
+    // Save the updated data back to the CSV file
+    await writeCSV(`${table}.csv`, data); // Implement writeCSV function
+
+    return { message: "Row inserted successfully." };
+}
+
+module.exports = { executeSELECTQuery, executeINSERTQuery };
