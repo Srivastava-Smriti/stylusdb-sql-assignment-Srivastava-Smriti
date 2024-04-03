@@ -21,6 +21,7 @@ test('Parse SQL Query', () => {
         "joinType": null,
         "groupByFields": null,
         orderByFields: null,
+        "limit": null,
        "hasAggregateWithoutGroupBy": false,
         whereClauses: []
     });
@@ -47,6 +48,7 @@ test('Parse SQL Query with WHERE Clause', () => {
         "joinType": null,
         "groupByFields": null,
         orderByFields: null,
+        "limit": null,
        "hasAggregateWithoutGroupBy": false,
         whereClauses: [{
           field: "age",
@@ -74,6 +76,7 @@ test('Parse SQL Query with Multiple WHERE Clauses', () => {
         "joinTable": null,
         table: 'student',
         "joinType": null,
+        "limit": null,
         "groupByFields": null,
         orderByFields: null,
        "hasAggregateWithoutGroupBy": false,

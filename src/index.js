@@ -83,7 +83,7 @@ function createResultRow(mainRow, joinRow, fields, table, includeAllMainFields) 
 }
 
 async function executeSELECTQuery(query) {
-    const { fields, table, whereClauses, joinType, joinTable, joinCondition, groupByFields, hasAggregateWithoutGroupBy, orderByFields } = parseQuery(query);
+    const { fields, table, whereClauses, joinType, joinTable, joinCondition, groupByFields, hasAggregateWithoutGroupBy, orderByFields, limit } = parseQuery(query);
     let data = await readCSV(`${table}.csv`);
 
     // Perform INNER JOIN if specified
@@ -113,7 +113,6 @@ async function executeSELECTQuery(query) {
         // Special handling for queries like 'SELECT COUNT(*) FROM table'
         const result = {};
 
-        // console.log({ filteredData })
 
         fields.forEach(field => {
             const match = /(\w+)\((\*|\w+)\)/.exec(field);
@@ -156,6 +155,9 @@ async function executeSELECTQuery(query) {
                 return 0;
             });
         }
+        if (limit !== null) {
+            groupResults = groupResults.slice(0, limit);
+        }
         return groupResults;
     } else {
 
@@ -170,7 +172,9 @@ async function executeSELECTQuery(query) {
                 return 0;
             });
         }
-
+        if (limit !== null) {
+            orderedResults = orderedResults.slice(0, limit);
+        }
         // Select the specified fields
         return orderedResults.map(row => {
             const selectedRow = {};
@@ -184,15 +188,22 @@ async function executeSELECTQuery(query) {
 }
 
 function parseValue(value) {
+
+    // Return null or undefined as is
     if (value === null || value === undefined) {
         return value;
     }
+
+    // If the value is a string enclosed in single or double quotes, remove them
     if (typeof value === 'string' && ((value.startsWith("'") && value.endsWith("'")) || (value.startsWith('"') && value.endsWith('"')))) {
         value = value.substring(1, value.length - 1);
     }
+
+    // Check if value is a number
     if (!isNaN(value) && value.trim() !== '') {
         return Number(value);
     }
+    // Assume value is a string if not a number
     return value;
 }
 

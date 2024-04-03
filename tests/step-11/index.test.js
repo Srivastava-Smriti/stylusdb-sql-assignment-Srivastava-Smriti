@@ -267,6 +267,7 @@ test('Parse SQL Query', () => {
         joinTable: null,
         joinType: null,
         groupByFields: null,
+        "limit": null,
         hasAggregateWithoutGroupBy: false,
         "orderByFields": null
     });
@@ -287,6 +288,7 @@ test('Parse SQL Query with WHERE Clause', () => {
         joinTable: null,
         joinType: null,
         groupByFields: null,
+        "limit": null,
         hasAggregateWithoutGroupBy: false,
         "orderByFields": null
     });
@@ -311,6 +313,7 @@ test('Parse SQL Query with Multiple WHERE Clauses', () => {
         joinTable: null,
         joinType: null,
         groupByFields: null,
+        "limit": null,
         hasAggregateWithoutGroupBy: false,
         "orderByFields": null
     });
@@ -327,6 +330,7 @@ test('Parse SQL Query with INNER JOIN', async () => {
         joinType: "INNER",
         joinCondition: { left: 'student.id', right: 'enrollment.student_id' },
         groupByFields: null,
+        "limit": null,
         hasAggregateWithoutGroupBy: false,
         "orderByFields": null
     })
@@ -343,6 +347,7 @@ test('Parse SQL Query with INNER JOIN and WHERE Clause', async () => {
         joinType: "INNER",
         joinCondition: { left: 'student.id', right: 'enrollment.student_id' },
         groupByFields: null,
+        "limit": null,
         hasAggregateWithoutGroupBy: false,
         "orderByFields": null
     })
@@ -401,6 +406,7 @@ test('Parse LEFT Join Query Completely', () => {
         joinTable: 'enrollment',
         joinCondition: { left: 'student.id', right: 'enrollment.student_id' },
         groupByFields: null,
+        "limit": null,
         hasAggregateWithoutGroupBy: false,
         "orderByFields": null
     })
@@ -417,6 +423,7 @@ test('Parse LEFT Join Query Completely', () => {
         joinTable: 'enrollment',
         joinCondition: { left: 'student.id', right: 'enrollment.student_id' },
         groupByFields: null,
+        "limit": null,
         hasAggregateWithoutGroupBy: false,
         "orderByFields": null
     })
@@ -433,6 +440,7 @@ test('Parse SQL Query with LEFT JOIN with a WHERE clause filtering the main tabl
         "table": "student",
         "whereClauses": [{ "field": "student.age", "operator": ">", "value": "22" }],
         groupByFields: null,
+        "limit": null,
         hasAggregateWithoutGroupBy: false,
         "orderByFields": null
     });
@@ -449,6 +457,7 @@ test('Parse SQL Query with LEFT JOIN with a WHERE clause filtering the join tabl
         "table": "student",
         "whereClauses": [{ "field": "enrollment.course", "operator": "=", "value": "'Physics'" }],
         groupByFields: null,
+        "limit": null,
         hasAggregateWithoutGroupBy: false,
         "orderByFields": null
     });
@@ -463,6 +472,7 @@ test('Parse SQL Query with RIGHT JOIN with a WHERE clause filtering the main tab
         "joinTable": "enrollment",
         "joinType": "RIGHT",
         "table": "student",
+        "limit": null,
         "whereClauses": [{ "field": "student.age", "operator": "<", "value": "25" }],
         groupByFields: null,
         hasAggregateWithoutGroupBy: false,
@@ -481,6 +491,7 @@ test('Parse SQL Query with RIGHT JOIN with a WHERE clause filtering the join tab
         "table": "student",
         "whereClauses": [{ "field": "enrollment.course", "operator": "=", "value": "'Chemistry'" }],
         groupByFields: null,
+        "limit": null,
         hasAggregateWithoutGroupBy: false,
         "orderByFields": null
     });
@@ -499,6 +510,7 @@ test('Parse COUNT Aggregate Query', () => {
         "joinCondition": null,
         "joinTable": null,
         "joinType": null,
+        "limit": null,
         "orderByFields": null
     });
 });
@@ -512,6 +524,7 @@ test('Parse SUM Aggregate Query', () => {
         table: 'student',
         whereClauses: [],
         groupByFields: null,
+        "limit": null,
         hasAggregateWithoutGroupBy: true,
         "joinCondition": null,
         "joinTable": null,
@@ -531,6 +544,7 @@ test('Parse AVG Aggregate Query', () => {
         hasAggregateWithoutGroupBy: true,
         "joinCondition": null,
         "joinTable": null,
+        "limit": null,
         "joinType": null,
         "orderByFields": null
     });
@@ -544,6 +558,7 @@ test('Parse MIN Aggregate Query', () => {
         table: 'student',
         whereClauses: [],
         groupByFields: null,
+        "limit": null,
         hasAggregateWithoutGroupBy: true,
         "joinCondition": null,
         "joinTable": null,
@@ -560,6 +575,7 @@ test('Parse MAX Aggregate Query', () => {
         table: 'student',
         whereClauses: [],
         groupByFields: null,
+        "limit": null,
         hasAggregateWithoutGroupBy: true,
         "joinCondition": null,
         "joinTable": null,
@@ -579,6 +595,7 @@ test('Parse basic GROUP BY query', () => {
         joinType: null,
         joinTable: null,
         joinCondition: null,
+        "limit": null,
         hasAggregateWithoutGroupBy: false,
         orderByFields: null
     });
@@ -595,6 +612,7 @@ test('Parse GROUP BY query with WHERE clause', () => {
         joinType: null,
         joinTable: null,
         joinCondition: null,
+        "limit": null,
         hasAggregateWithoutGroupBy: false,
         orderByFields: null
     });
@@ -611,6 +629,7 @@ test('Parse GROUP BY query with multiple fields', () => {
         joinType: null,
         joinTable: null,
         joinCondition: null,
+        "limit": null,
         hasAggregateWithoutGroupBy: false,
         orderByFields: null
     });
@@ -624,6 +643,7 @@ test('Parse GROUP BY query with JOIN and WHERE clauses', () => {
         table: 'student',
         whereClauses: [{ field: 'enrollment.course', operator: '=', value: '"Mathematics"' }],
         groupByFields: ['student.name'],
+        "limit": null,
         joinType: 'INNER',
         joinTable: 'enrollment',
         joinCondition: {

@@ -1,5 +1,15 @@
 function parseQuery(query) {
     query = query.trim();
+    
+    const limitRegex = /\sLIMIT\s(\d+)/i;
+    const limitMatch = query.match(limitRegex);
+
+    let limit = null;
+    if (limitMatch) {
+        limit = parseInt(limitMatch[1], 10);
+        query = query.replace(limitRegex, ''); // Remove LIMIT clause
+    }
+
     const orderByRegex = /\sORDER BY\s(.+)/i;
     const orderByMatch = query.match(orderByRegex);
 
@@ -13,7 +23,7 @@ function parseQuery(query) {
 
     // Remove ORDER BY clause from the query for further processing
     query = query.replace(orderByRegex, '');
-    
+
     const groupByRegex = /\sGROUP BY\s(.+)/i;
     const groupByMatch = query.match(groupByRegex);
     let groupByFields = null;
@@ -36,6 +46,7 @@ function parseQuery(query) {
     const joinSplit = queryWithoutWhere.split(/\s(INNER|LEFT|RIGHT) JOIN\s/i);
     const selectPart = joinSplit[0].trim(); // Everything before JOIN clause
 
+    
     // Parse the SELECT part
     const selectRegex = /^SELECT\s(.+?)\sFROM\s(.+)/i;
     const selectMatch = selectPart.match(selectRegex);
@@ -53,8 +64,8 @@ function parseQuery(query) {
         whereClauses = parseWhereClause(whereClause);
     }
 
-    const aggregateFunctionRegex = /(\bCOUNT\b|\bAVG\b|\bSUM\b|\bMIN\b|\bMAX\b)\s*\(\s*(\*|\w+)\s*\)/i;
-    const hasAggregateWithoutGroupBy = aggregateFunctionRegex.test(query) && !groupByFields;
+    // const aggregateFunctionRegex = /(\bCOUNT\b|\bAVG\b|\bSUM\b|\bMIN\b|\bMAX\b)\s*\(\s*(\*|\w+)\s*\)/i;
+    const hasAggregateWithoutGroupBy = checkAggregateWithoutGroupBy(query, groupByFields);
 
     return {
         fields: fields.split(',').map(field => field.trim()),
@@ -65,9 +76,16 @@ function parseQuery(query) {
         joinCondition,
         groupByFields,
         orderByFields,
-        hasAggregateWithoutGroupBy
+        hasAggregateWithoutGroupBy,
+        limit
     };
 }
+
+function checkAggregateWithoutGroupBy(query, groupByFields) {
+    const aggregateFunctionRegex = /(\bCOUNT\b|\bAVG\b|\bSUM\b|\bMIN\b|\bMAX\b)\s*\(\s*(\*|\w+)\s*\)/i;
+    return aggregateFunctionRegex.test(query) && !groupByFields;
+}
+
     function parseWhereClause(whereString) {
         const conditionRegex = /(.*?)(=|!=|>|<|>=|<=)(.*)/;
         return whereString.split(/ AND | OR /i).map(conditionString => {

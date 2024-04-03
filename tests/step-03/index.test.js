@@ -20,6 +20,7 @@ test('Parse SQL Query', () => {
         "joinType": null,
         "groupByFields": null,
         orderByFields: null,
+        "limit": null,
         "hasAggregateWithoutGroupBy": false,
         whereClauses: []
     });
