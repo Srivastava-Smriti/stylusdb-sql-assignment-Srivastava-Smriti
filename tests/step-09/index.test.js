@@ -19,6 +19,7 @@ test('Parse SQL Query', () => {
         whereClauses: [],
         joinCondition: null,
         joinTable: null,
+        "isDistinct": false,
         "groupByFields": null,
         "limit": null,
         orderByFields: null,
@@ -52,6 +53,7 @@ test('Parse SQL Query with WHERE Clause', () => {
         joinTable: null,
         "groupByFields": null,
         orderByFields: null,
+        "isDistinct": false,
         "limit": null,
        "hasAggregateWithoutGroupBy": false,
         joinType: null
@@ -87,6 +89,7 @@ test('Parse SQL Query with Multiple WHERE Clauses', () => {
         "groupByFields": null,
         orderByFields: null,
         "limit": null,
+        "isDistinct": false,
        "hasAggregateWithoutGroupBy": false,
         joinType: null
     });
@@ -125,6 +128,7 @@ test('Parse SQL Query with INNER JOIN', async () => {
         joinType: 'INNER',
         "groupByFields": null,
         orderByFields: null,
+        "isDistinct": false,
         "limit": null,
        "hasAggregateWithoutGroupBy": false
     })
@@ -140,6 +144,7 @@ test('Parse SQL Query with INNER JOIN and WHERE Clause', async () => {
         joinTable: 'enrollment',
         joinCondition: { left: 'student.id', right: 'enrollment.student_id' },
         joinType: 'INNER',
+        "isDistinct": false,
         "groupByFields": null,
         orderByFields: null,
         "limit": null,

@@ -1,6 +1,14 @@
 function parseQuery(query) {
+    try {
+
     query = query.trim();
-    
+    let isDistinct = false;
+
+        // Check for DISTINCT keyword and update the query
+        if (query.toUpperCase().includes('SELECT DISTINCT')) {
+            isDistinct = true;
+            query = query.replace('SELECT DISTINCT', 'SELECT');
+        }
     const limitRegex = /\sLIMIT\s(\d+)/i;
     const limitMatch = query.match(limitRegex);
 
@@ -19,18 +27,17 @@ function parseQuery(query) {
             const [fieldName, order] = field.trim().split(/\s+/);
             return { fieldName, order: order ? order.toUpperCase() : 'ASC' };
         });
-    }
 
     // Remove ORDER BY clause from the query for further processing
     query = query.replace(orderByRegex, '');
-
+    }
     const groupByRegex = /\sGROUP BY\s(.+)/i;
     const groupByMatch = query.match(groupByRegex);
     let groupByFields = null;
     if (groupByMatch) {
         groupByFields = groupByMatch[1].split(',').map(field => field.trim());
+        query = query.replace(groupByRegex, '');
     }
-    query = query.replace(groupByRegex, '');
     
     
     
@@ -77,8 +84,13 @@ function parseQuery(query) {
         groupByFields,
         orderByFields,
         hasAggregateWithoutGroupBy,
+        isDistinct,
         limit
     };
+} catch (error) {
+    // console.log(error.message);
+    throw new Error(`Query parsing error: ${error.message}`);
+}
 }
 
 function checkAggregateWithoutGroupBy(query, groupByFields) {
@@ -89,12 +101,17 @@ function checkAggregateWithoutGroupBy(query, groupByFields) {
     function parseWhereClause(whereString) {
         const conditionRegex = /(.*?)(=|!=|>|<|>=|<=)(.*)/;
         return whereString.split(/ AND | OR /i).map(conditionString => {
-            const match = conditionString.match(conditionRegex);
-            if (match) {
-                const [, field, operator, value] = match;
-                return { field: field.trim(), operator, value: value.trim() };
+            if (conditionString.includes(' LIKE ')) {
+                const [field, pattern] = conditionString.split(/\sLIKE\s/i);
+                return { field: field.trim(), operator: 'LIKE', value: pattern.trim().replace(/^'(.*)'$/, '$1') };
+            } else {
+                const match = conditionString.match(conditionRegex);
+                if (match) {
+                    const [, field, operator, value] = match;
+                    return { field: field.trim(), operator, value: value.trim() };
+                }
+                throw new Error('Invalid WHERE clause format');
             }
-            throw new Error('Invalid WHERE clause format');
         });
     }
 

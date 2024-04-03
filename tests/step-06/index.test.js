@@ -19,6 +19,7 @@ test('Parse SQL Query', () => {
         "joinCondition": null,
         "joinTable": null,
         "joinType": null,
+        "isDistinct": false,
         "groupByFields": null,
         orderByFields: null,
         "limit": null,
@@ -48,6 +49,7 @@ test('Parse SQL Query with WHERE Clause', () => {
         "joinType": null,
         "groupByFields": null,
         orderByFields: null,
+        "isDistinct": false,
         "limit": null,
        "hasAggregateWithoutGroupBy": false,
         whereClauses: [{
@@ -78,6 +80,7 @@ test('Parse SQL Query with Multiple WHERE Clauses', () => {
         "joinType": null,
         "groupByFields": null,
         "limit": null,
+        "isDistinct": false,
         orderByFields: null,
        "hasAggregateWithoutGroupBy": false,
         whereClauses: [{

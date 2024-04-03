@@ -21,6 +21,7 @@ test('Parse SQL Query', () => {
         "groupByFields": null,
         orderByFields: null,
         "limit": null,
+        "isDistinct": false,
         "hasAggregateWithoutGroupBy": false,
         whereClauses: []
     });
